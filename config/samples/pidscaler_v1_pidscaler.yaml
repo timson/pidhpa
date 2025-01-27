@@ -1,0 +1,26 @@
+apiVersion: pidscaler.ts/v1
+kind: PIDScaler
+metadata:
+  labels:
+    app.kubernetes.io/name: pidhpa
+    app.kubernetes.io/managed-by: kustomize
+  name: pidscaler-sample
+spec:
+  target:
+    deployment: nginx-deployment
+    namespace: default
+    min_replicas: 2
+    max_replicas: 10
+  pid:
+    kp: "0.1"
+    ki: "0.1"
+    kd: "0"
+    reference_signal: 10
+  kafka:
+    brokers:
+      - "localhost:50000"
+    topic: glogger
+    group: group1
+    use_sasl: false
+  interval: 5
+  cooldown_timeout: 30

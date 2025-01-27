@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- pidscaler_v1_pidscaler.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

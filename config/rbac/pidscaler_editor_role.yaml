@@ -1,0 +1,27 @@
+# permissions for end users to edit pidscalers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: pidhpa
+    app.kubernetes.io/managed-by: kustomize
+  name: pidscaler-editor-role
+rules:
+- apiGroups:
+  - pidscaler.ts
+  resources:
+  - pidscalers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pidscaler.ts
+  resources:
+  - pidscalers/status
+  verbs:
+  - get
