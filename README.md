@@ -25,7 +25,23 @@ This project explores how PID controllers can improve scaling in Kubernetes, esp
 - kubectl version v1.11.3+.
 - Access to a Kubernetes v1.11.3+ cluster.
 
-### To Deploy on the cluster
+### To Deploy on the cluster using source code
+
+**Install the CRDs into the cluster:**
+
+```sh
+make install
+```
+
+> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
+privileges or be logged in as admin.
+
+**Deploy the controller to the cluster:**
+
+```sh
+make deploy
+```
+
 **Build and push your image to the location specified by `IMG`:**
 
 ```sh
@@ -36,15 +52,18 @@ make docker-build docker-push IMG=<some-registry>/pidhpa:tag
 And it is required to have access to pull the image from the working environment.
 Make sure you have the proper permission to the registry if the above commands don’t work.
 
-**Install the CRDs into the cluster:**
 
+
+### Deploy the controller to the cluster using Helm Chart
+The project includes a Helm chart located in the `helm` folder. This chart allows you to deploy the PIDHPA operator
+on your Kubernetes cluster using Helm.
+It uses the same configuration as the CRD, but you can customize the values in the `values.yaml` file.
+Based on image `pidhpa:latest` from the `ghcr.io/timson/pidhpa`.
+
+To install operator using Helm, run the following command:
 ```sh
-make install
+helm install install pidhpa-operator ./helm --namespace default
 ```
-
-
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
 
 ## Configure Your Own CRD
 To set up your own PIDScaler Custom Resource Definition (CRD), you can use the following example configuration. Each field is explained below:
@@ -162,17 +181,6 @@ Below some example of the simulation output (plots):
 
 ![Example Simulation Output](simulation/simulation_example.png)
 
-
-## Helm Chart
-The project includes a Helm chart located in the `helm` folder. This chart allows you to deploy the PIDHPA operator
-on your Kubernetes cluster using Helm.
-It uses the same configuration as the CRD, but you can customize the values in the `values.yaml` file.
-Based on image `pidhpa:latest` from the `ghcr.io/timson/pidhpa`.
-
-To install operator using Helm, run the following command:
-```sh
-helm install install pidhpa-operator ./helm --namespace default
-```
 
 ## License
 
