@@ -37,7 +37,8 @@ import (
 
 	pidscalerv1 "github.com/timson/pidhpa-operator/api/v1"
 	"github.com/timson/pidhpa-operator/internal/controller"
-	"github.com/timson/pidhpa-operator/internal/metrics"
+	internalmetrics "github.com/timson/pidhpa-operator/internal/metrics"
+	"sigs.k8s.io/controller-runtime/pkg/metrics"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -60,13 +61,13 @@ func main() {
 	var secureMetrics bool
 	var enableHTTP2 bool
 	var tlsOpts []func(*tls.Config)
-	flag.StringVar(&metricsAddr, "metrics-bind-address", "0", "The address the metrics endpoint binds to. "+
+	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metrics endpoint binds to. "+
 		"Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.BoolVar(&secureMetrics, "metrics-secure", true,
+	flag.BoolVar(&secureMetrics, "metrics-secure", false,
 		"If set, the metrics endpoint is served securely via HTTPS. Use --metrics-secure=false to use HTTP instead.")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
@@ -165,14 +166,23 @@ func main() {
 		setupLog.Error(err, "unable to set up ready check")
 		os.Exit(1)
 	}
-	server := metrics.NewMetricsServer(setupLog)
+	metrics.Registry.MustRegister(
+		internalmetrics.KafkaLag,
+		internalmetrics.ReferenceSignal,
+		internalmetrics.MinOutput,
+		internalmetrics.MaxOutput,
+		internalmetrics.PidKp,
+		internalmetrics.PidKi,
+		internalmetrics.PidKd,
+		internalmetrics.PidOutput,
+		internalmetrics.CRDFetchErrors,
+		internalmetrics.CRDUpdateErrors,
+		internalmetrics.Replicas,
+	)
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
-	}
-	if err := server.Shutdown(ctx); err != nil {
-		setupLog.Error(err, "shutdown metrics server problem")
 	}
 	pidScalerReconciler.WaitForAllWorkers()
 }
