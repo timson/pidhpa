@@ -59,7 +59,7 @@ metadata:
   name: pidscaler-sample
 spec:
   target:
-    deployment: nginx-deployment
+    deployment: some-deployment
     namespace: default
     min_replicas: 1
     max_replicas: 10
@@ -71,8 +71,8 @@ spec:
   kafka:
     brokers:
       - "localhost:50000"
-    topic: glogger
-    group: group1
+    topic: some_topic
+    group: some_group
     use_sasl: false
   interval: 5
   cooldown_timeout: 30
@@ -118,8 +118,6 @@ To delete the CRD instances from the cluster:
 kubectl delete -k config/samples/
 ```
 
-
-
 **Delete the APIs(CRDs) from the cluster:**
 
 ```sh
@@ -160,6 +158,21 @@ The simulation produces the following plots:
 - **Pod Count Over Time**: Displays the number of pods adjusted by the PID controller.
 - **Ingestion Rate Over Time**: Visualizes the changing workload ingestion rates.
 
+Below some example of the simulation output (plots):
+
+![Example Simulation Output](simulation/simulation_example.png)
+
+
+## Helm Chart
+The project includes a Helm chart located in the `helm` folder. This chart allows you to deploy the PIDHPA operator
+on your Kubernetes cluster using Helm.
+It uses the same configuration as the CRD, but you can customize the values in the `values.yaml` file.
+Based on image `pidhpa:latest` from the `ghcr.io/timson/pidhpa`.
+
+To install operator using Helm, run the following command:
+```sh
+helm install install pidhpa-operator ./helm --namespace default
+```
 
 ## License
 

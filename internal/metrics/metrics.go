@@ -1,11 +1,7 @@
 package metrics
 
 import (
-	"net/http"
-
-	"github.com/go-logr/logr"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -87,16 +83,3 @@ var (
 		[]string{"namespaced_name"},
 	)
 )
-
-func NewMetricsServer(logger logr.Logger) *http.Server {
-	prometheus.MustRegister(KafkaLag, MinOutput, MaxOutput, ReferenceSignal, PidOutput, Replicas)
-	http.Handle("/metrics", promhttp.Handler())
-	server := &http.Server{Addr: ":8080"}
-	go func() {
-		logger.Info("Starting metrics server", "address", server.Addr)
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error(err, "Failed to start metrics server")
-		}
-	}()
-	return server
-}
