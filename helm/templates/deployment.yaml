@@ -34,11 +34,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: { .Values.healthProbe.port }}
+              port: {{ .Values.healthProbe.port }}
           readinessProbe:
             httpGet:
               path: /readyz
-              port: { .Values.healthProbe.port }}
+              port: {{ .Values.healthProbe.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

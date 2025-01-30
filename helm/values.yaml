@@ -21,4 +21,7 @@ resources:
     cpu: "100m"
     memory: "64Mi"
 
+healthProbe:
+  port: 8081
+
 watchNamespace: "" # Set to a specific namespace if you want to watch only that namespace, or "" for all namespaces
