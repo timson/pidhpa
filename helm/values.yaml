@@ -24,4 +24,14 @@ resources:
 healthProbe:
   port: 8081
 
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: "8080"
+
 watchNamespace: "" # Set to a specific namespace if you want to watch only that namespace, or "" for all namespaces
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080

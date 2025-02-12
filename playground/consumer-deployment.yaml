@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer
+  labels:
+    app: kafka-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer
+    spec:
+      containers:
+        - name: consumer
+          image: python:3.9 # Official Python image
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "pip install kafka-python && python /app/consumer.py",
+            ]
+          volumeMounts:
+            - name: consumer-script
+              mountPath: /app
+      volumes:
+        - name: consumer-script
+          configMap:
+            name: kafka-consumer-script
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-consumer-script
+data:
+  consumer.py: |
+    from kafka import KafkaConsumer
+    import time
+
+    consumer = KafkaConsumer(
+        'test',
+        bootstrap_servers='my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092',
+        group_id='test-group',
+        auto_offset_reset='earliest',
+        enable_auto_commit=True
+    )
+
+    print("Kafka Consumer started...")
+
+    for message in consumer:
+        print(f"Received: {message.value.decode('utf-8')}")
+        time.sleep(0.1)  # Sleep for 100ms

@@ -20,8 +20,8 @@ func (r *PIDScalerReconciler) GetDeployment(ctx context.Context, namespaceName s
 
 func (r *PIDScalerReconciler) ScaleReplicas(ctx context.Context, namespace string, deployment string, replicas int32) error {
 	dep, found := r.GetDeployment(ctx, namespace, deployment)
-	if found == false {
-		return fmt.Errorf("No deployment %s found in ns %s", deployment, namespace)
+	if !found {
+		return fmt.Errorf("no deployment %s found in ns %s", deployment, namespace)
 	}
 	if dep.Spec.Replicas != nil && *dep.Spec.Replicas != replicas {
 		dep.Spec.Replicas = &replicas

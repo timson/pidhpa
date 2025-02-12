@@ -181,6 +181,12 @@ Below some example of the simulation output (plots):
 
 ![Example Simulation Output](simulation/simulation_example.png)
 
+## Quickstart Guide
+For a hands-on introduction to `pidhpa`, check out the [Quickstart Guide](playground/quickstart.md).
+This guide walks you through setting up a local Kubernetes cluster, deploying the PIDHPA operator,
+and configuring a sample workload to see the PID controller in action.
+It’s a great way to get started quickly and understand how the system works.
+
 
 ## License
 

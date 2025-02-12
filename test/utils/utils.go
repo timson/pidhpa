@@ -22,6 +22,7 @@ import (
 	"os/exec"
 	"strings"
 
+	//lint:ignore ST1001 This is a test file and should be in the test package
 	. "github.com/onsi/ginkgo/v2" //nolint:golint,revive
 )
 

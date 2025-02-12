@@ -18,8 +18,9 @@ package controller
 
 import (
 	"context"
-	"github.com/timson/pidhpa-operator/internal/storage"
 	"sync"
+
+	"github.com/timson/pidhpa-operator/internal/storage"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

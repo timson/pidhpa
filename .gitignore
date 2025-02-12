@@ -38,4 +38,6 @@ venv/
 ENV/
 env/
 .venv/
-```
+
+# Track custom hooks directory
+!.githooks/

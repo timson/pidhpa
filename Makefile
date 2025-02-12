@@ -29,7 +29,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # ts/pidhpa-bundle:$VERSION and ts/pidhpa-catalog:$VERSION.
-IMAGE_TAG_BASE ?= ts/pidhpa
+IMAGE_TAG_BASE ?= timson/pidhpa
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -212,7 +212,7 @@ GOLANGCI_LINT = $(LOCALBIN)/golangci-lint
 KUSTOMIZE_VERSION ?= v5.4.2
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
 ENVTEST_VERSION ?= release-0.18
-GOLANGCI_LINT_VERSION ?= v1.59.1
+GOLANGCI_LINT_VERSION ?= v1.63.4
 
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
@@ -322,3 +322,14 @@ catalog-build: opm ## Build a catalog image.
 .PHONY: catalog-push
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
+
+.PHONY: staticcheck install-staticcheck
+
+GOBIN ?= $(shell go env GOPATH)/bin
+STATICCHECK := $(GOBIN)/staticcheck
+
+install-staticcheck:
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+
+staticcheck: install-staticcheck
+	$(STATICCHECK) ./...
