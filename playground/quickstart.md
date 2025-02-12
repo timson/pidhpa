@@ -29,6 +29,12 @@ kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 kubectl apply -f kafka-topic.yaml -n kafka
 ```
 
+wait until operator is ready:
+```sh
+kubectl apply -f https://strimzi.io/examples/latest/kafka/kraft/kafka-single-node.yaml -n kafka
+```
+
+
 #### 3. Update Kafka Topic to 24 Partitions
 ```sh
 kubectl exec pod/my-cluster-dual-role-0 -n kafka -it -- \
@@ -49,6 +55,9 @@ kubectl apply -f consumer-deployment.yaml -n default
 > **Note:** One consumer pod processes approximately 10 messages per second.
 
 ### 6. Install PID HPA Operator
+
+From the project root directory:
+
 ```sh
 helm install pidhpa-operator ./helm --namespace default
 ```
@@ -59,7 +68,12 @@ kubectl apply -f pidscaler.yaml -n default
 ```
 
 ### 8. Install VictoriaMetrics Monitoring Stack
+
+Install VictoriaMetrics monitoring stack using Helm:
+
 ```sh
+helm repo add vm https://victoriametrics.github.io/helm-charts/
+helm repo update
 helm install vmks vm/victoria-metrics-k8s-stack -f vmstack-values.yaml -n vm --create-namespace
 ```
 
