@@ -38,4 +38,8 @@ venv/
 ENV/
 env/
 .venv/
-```
+
+# Ignore everything inside .git/hooks except explicitly tracked files
+.git/hooks/*
+!.git/hooks/pre-commit
+!.git/hooks/pre-push
