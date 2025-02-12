@@ -322,3 +322,14 @@ catalog-build: opm ## Build a catalog image.
 .PHONY: catalog-push
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
+
+.PHONY: staticcheck install-staticcheck
+
+GOBIN ?= $(shell go env GOPATH)/bin
+STATICCHECK := $(GOBIN)/staticcheck
+
+install-staticcheck:
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+
+staticcheck: install-staticcheck
+	$(STATICCHECK) ./...
