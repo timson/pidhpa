@@ -1,0 +1,26 @@
+apiVersion: pidscaler.ts/v1
+kind: PIDScaler
+metadata:
+  labels:
+    app.kubernetes.io/name: pidhpa
+    app.kubernetes.io/managed-by: kustomize
+  name: pidscaler-sample
+spec:
+  target:
+    deployment: kafka-consumer
+    namespace: default
+    min_replicas: 1
+    max_replicas: 24
+  pid:
+    kp: "0.0001"
+    ki: "0.001"
+    kd: "0"
+    reference_signal: 500
+  kafka:
+    brokers:
+      - "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    topic: test
+    group: test-group
+    use_sasl: false
+  interval: 5
+  cooldown_timeout: 30

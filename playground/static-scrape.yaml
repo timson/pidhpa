@@ -1,0 +1,13 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMStaticScrape
+metadata:
+  name: pid-operator
+  namespace: vm
+spec:
+  jobName: "pidhpa-exporter"
+  targetEndpoints:
+    - targets: ["pidhpa-operator.default.svc.cluster.local:8080"]
+      labels:
+        env: home
+      scheme: "http"
+      path: "/metrics"

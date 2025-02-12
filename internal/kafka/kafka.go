@@ -45,7 +45,7 @@ func NewKafkaClient(brokers []string, useSASL bool, saslMechanism string, userna
 		kgo.SeedBrokers(brokers...),
 		kgo.MaxVersions(kversion.V2_4_0()),
 	}
-	if useSASL == true {
+	if useSASL {
 		var sm sasl.Mechanism
 		if saslMechanism == "plain" {
 			sm = plain.Auth{User: username, Pass: password}.AsMechanism()

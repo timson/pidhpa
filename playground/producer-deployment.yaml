@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer
+  labels:
+    app: kafka-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      containers:
+        - name: producer
+          image: python:3.9
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "pip install kafka-python flask gunicorn && gunicorn -w 4 -b 0.0.0.0:5000 producer:app",
+            ]
+          workingDir: /app
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: producer-script
+              mountPath: /app
+      volumes:
+        - name: producer-script
+          configMap:
+            name: kafka-producer-script
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-producer-script
+data:
+  producer.py: |
+    from flask import Flask, request, jsonify
+    from kafka import KafkaProducer
+    import json
+
+    app = Flask(__name__)
+    producer = KafkaProducer(
+        bootstrap_servers='my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092',
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    )
+
+    @app.route('/produce', methods=['POST'])
+    def produce():
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid JSON'}), 400
+        producer.send('test', value=data)
+        return jsonify({'message': 'Sent to Kafka'}), 200
+
+    if __name__ == '__main__':
+        app.run(host='0.0.0.0', port=5000)

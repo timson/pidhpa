@@ -1,0 +1,47 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: pidhpa.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: PIDScaler is the Schema for the pidscalers API
+      displayName: PIDScaler
+      kind: PIDScaler
+      name: pidscalers.pidscaler.ts
+      version: v1
+  description: HPA for K8S based on PID regulator
+  displayName: pidhpa
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - kafka
+  - hpa
+  - pid
+  links:
+  - name: Pidhpa
+    url: https://pidhpa.domain
+  maturity: alpha
+  provider:
+    name: timson
+    url: https://github.com/timson/pidhpa
+  version: 0.0.0

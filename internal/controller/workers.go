@@ -3,14 +3,15 @@ package controller
 import (
 	"context"
 	"errors"
+	"math"
+	"time"
+
 	"github.com/timson/pidhpa-operator/internal/kafka"
 	"github.com/timson/pidhpa-operator/internal/metrics"
 	"github.com/timson/pidhpa-operator/internal/pid"
 	"github.com/timson/pidhpa-operator/internal/storage"
 	"github.com/twmb/franz-go/pkg/kadm"
-	"math"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"time"
 )
 
 func (r *PIDScalerReconciler) WaitForAllWorkers() {
@@ -124,7 +125,7 @@ func (r *PIDScalerReconciler) Worker(ctx context.Context, namespacedName client.
 						r.Log.Error(err, "Failed to get PIDScaler")
 					} else {
 						dep, found := r.GetDeployment(ctx, pidScaler.TargetSettings.Namespace, pidScaler.TargetSettings.Deployment)
-						if pidScalerCRD.Spec.Target.DesiredReplicas != &replicas || (found == true && dep.Spec.Replicas != nil && *dep.Spec.Replicas != replicas) {
+						if pidScalerCRD.Spec.Target.DesiredReplicas != &replicas || (found && dep.Spec.Replicas != nil && *dep.Spec.Replicas != replicas) {
 							err = r.updateDesiredReplicas(ctx, namespacedName, replicas)
 							if err != nil {
 								r.Log.Error(err, "Failed to update PIDScaler desired replicas", "name", namespacedName.String())
